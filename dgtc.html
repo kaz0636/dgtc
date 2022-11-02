@@ -55,16 +55,21 @@
         <!-- /container -->
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        //danbooru tag
-        $('#cnv').on('click', () => {
+        const cnv = document.querySelector('#cnv');
+        const clr = document.querySelector('#clr');
+        const tags = document.querySelector('#tags');
+        const pTags = document.querySelector('#pTags');
+
+        //tag converter
+        cnv.addEventListener('click', () => {
             let m;
             let result = [];
             var regexp;
 
-            var str = $('#tags').val();
+            var str = tags.value;
+
             //check line count
             let count = lineCount(str);
 
@@ -94,12 +99,14 @@
             }
 
             if (result.length) {
-                $('#pTags').val(result.join(', ')).select();
+                pTags.value = result.join(', ')
+                pTags.select();
             }
         });
 
-        $('#clr').on('click', () => {
-            $('#tags').val('').trigger('focus');
+        clr.addEventListener('click', () => {
+            tags.value = '';
+            tags.focus();
         });
 
         const lineCount = (str) => {
@@ -119,7 +126,10 @@
             return count;
         };
 
-        $('#tags').trigger('focus');
+        // domument ready
+        document.addEventListener('DOMContentLoaded', function () {
+            tags.focus();
+        });
 
     </script>
 </body>
