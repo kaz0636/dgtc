@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja" class="h-100">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Danbooru/Gelbooru tag converter</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        main>.container {
+            padding: 70px 15px 0;
+        }
+
+        textarea.form-control {
+            min-height: calc(8em + .75rem + 2px);
+        }
+    </style>
+</head>
+
+<body class="d-flex flex-column h-100">
+    <header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">d/gtc</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ページコンテンツ -->
+    <main class="flex-shrink-0">
+        <div class="container">
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row g-2 m-2">
+
+                        <p class="display-6">Prompt</p>
+                        <textarea id="pTags" class="form-control"></textarea>
+
+                        <p class="display-6">Tag</p>
+                        <textarea id="tags" class="form-control"></textarea>
+
+                        <button type="button" id="cnv" class="btn btn-primary">
+                            Convert
+                        </button>
+                        <button type="button" id="clr" class="btn btn-danger">
+                            Clear
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /container -->
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        //danbooru tag
+        $('#cnv').on('click', () => {
+            let m;
+            let result = [];
+            var regexp;
+
+            var str = $('#tags').val();
+            //check line count
+            let count = lineCount(str);
+
+            if (count < 1) {
+                return false;
+            } else if (count == 1) {
+                //gelbooru
+                str = str.replace(/\?\s/gm, '\n');
+                regexp = /(.+)\s[0-9]{3,}$/gm;
+            } else {
+                //danbooru
+                regexp = /\s+\?\s*(.*)\s+[0-9]/gm;
+            }
+
+            while ((m = regexp.exec(str)) !== null) {
+                //nullによる無限ループを避けるために必要
+                if (m.index === regexp.lastIndex) {
+                    regexp.lastIndex++;
+                }
+
+                //結果は変数mを介してアクセス
+                m.forEach((match, groupIndex) => {
+                    if (groupIndex == 1) {
+                        result.push(match.replace('+ - ', ''));
+                    }
+                });
+            }
+
+            if (result.length) {
+                $('#pTags').val(result.join(', ')).select();
+            }
+        });
+
+        $('#clr').on('click', () => {
+            $('#tags').val('').trigger('focus');
+        });
+
+        const lineCount = (str) => {
+            'use strict';
+            let lines = str.match(/\r\n|\n/g);
+            var count = 0;
+            if (str !== '') {
+                if (lines != null) {
+                    count = lines.length + 1;
+                } else {
+                    count = 1;
+                }
+            } else {
+                count = false;
+            }
+
+            return count;
+        };
+
+        $('#tags').trigger('focus');
+
+    </script>
+</body>
+
+</html>
