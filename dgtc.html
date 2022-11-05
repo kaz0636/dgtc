@@ -64,11 +64,12 @@
 
         //tag converter
         cnv.addEventListener('click', () => {
+            'use strict';
             let m;
             let result = [];
-            var regexp;
+            let regexp;
 
-            var str = tags.value;
+            let str = tags.value;
 
             //check line count
             let count = lineCount(str);
@@ -109,6 +110,7 @@
             tags.focus();
         });
 
+        //line counter
         const lineCount = (str) => {
             'use strict';
             let lines = str.match(/\r\n|\n/g);
