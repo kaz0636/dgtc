@@ -35,15 +35,15 @@
                     <div class="row g-2 m-2">
 
                         <p class="display-6">Prompt</p>
-                        <textarea id="pTags" class="form-control"></textarea>
+                        <textarea id="prmTxt" class="form-control"></textarea>
 
                         <p class="display-6">Tag</p>
-                        <textarea id="tags" class="form-control"></textarea>
+                        <textarea id="tagTxt" class="form-control"></textarea>
 
-                        <button type="button" id="cnv" class="btn btn-primary">
+                        <button type="button" id="cnvBtn" class="btn btn-primary">
                             Convert
                         </button>
-                        <button type="button" id="clr" class="btn btn-danger">
+                        <button type="button" id="clrBtn" class="btn btn-danger">
                             Clear
                         </button>
 
@@ -57,36 +57,36 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const cnv = document.querySelector('#cnv');
-        const clr = document.querySelector('#clr');
-        const tags = document.querySelector('#tags');
-        const pTags = document.querySelector('#pTags');
+        const cnvBtn = document.querySelector('#cnvBtn');
+        const clrBtn = document.querySelector('#clrBtn');
+        const tagTxt = document.querySelector('#tagTxt');
+        const prmTxt = document.querySelector('#prmTxt');
 
-        //tag converter
-        cnv.addEventListener('click', () => {
+        //変換ボタン
+        cnvBtn.addEventListener('click', () => {
             'use strict';
             let m;
             let result = [];
             let regexp;
 
-            let str = tags.value;
+            let tags = tagTxt.value;
 
-            //check line count
-            let count = lineCount(str);
+            //行数を確認する
+            let count = lineCount(tags);
 
             if (count < 1) {
                 return false;
             } else if (count == 1) {
-                //gelbooru
-                str = str.replace(/(Artist|Character|Copyright|Metadata|Tag)/gm, '');
-                str = str.replace(/\?\s/gm, '\n');
+                //gelbooru用処理
+                tags = tags.replace(/(Artist|Character|Copyright|Metadata|Tag)/gm, '');
+                tags = tag.replace(/\?\s/gm, '\n');
                 regexp = /(.+)\s[0-9]{3,}$/gm;
             } else {
-                //danbooru
+                //danbooru用処理
                 regexp = /\s+\?\s*(.*)\s+[0-9]/gm;
             }
 
-            while ((m = regexp.exec(str)) !== null) {
+            while ((m = regexp.exec(tags)) !== null) {
                 //nullによる無限ループを避けるために必要
                 if (m.index === regexp.lastIndex) {
                     regexp.lastIndex++;
@@ -101,22 +101,23 @@
             }
 
             if (result.length) {
-                pTags.value = result.join(', ')
-                pTags.select();
+                prmTxt.value = result.join(', ')
+                prmTxt.select();
             }
         });
 
-        clr.addEventListener('click', () => {
-            tags.value = '';
-            tags.focus();
+        //クリアボタン
+        clrBtn.addEventListener('click', () => {
+            tagTxt.value = '';
+            tagTxt.focus();
         });
 
-        //line counter
-        const lineCount = (str) => {
+        //行数カウント
+        const lineCount = (txt) => {
             'use strict';
-            let lines = str.trim().match(/\r\n|\n/g);
+            let lines = txt.trim().match(/\r\n|\n/g);
             var count = 0;
-            if (str !== '') {
+            if (txt !== '') {
                 if (lines != null) {
                     count = lines.length + 1;
                 } else {
@@ -129,9 +130,9 @@
             return count;
         };
 
-        // domument ready
+        //DOM準備完了
         document.addEventListener('DOMContentLoaded', function () {
-            tags.focus();
+            tagTxt.focus();
         });
 
     </script>
